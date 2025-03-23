@@ -26,7 +26,7 @@ export default function Login() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen ">
             <h1 className="text-2xl mb-4">Login</h1>
             <form onSubmit={handleLogin} className="flex flex-col gap-2">
                 <input
@@ -43,7 +43,7 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="border p-2 rounded"
                 />
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded">Login</button>
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded cursor-pointer">Login</button>
             </form>
         </div>
     );

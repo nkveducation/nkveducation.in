@@ -14,7 +14,8 @@ import {
 
 const menuItems = [
   { title: "Home", link: "home", icon: Home },
-  { title: "Employee", link: "employee", icon: Briefcase },
+  { title: "Teachers", link: "teachers", icon: Briefcase },
+  { title: "Employees", link: "employee", icon: Briefcase },
   { title: "Student", link: "student", icon: GraduationCap },
 ];
 
