@@ -1,5 +1,7 @@
+"use client"
+
 import { ModeToggle } from "@/components/ModeToggle";
-import SearchEmployee from "@/components/Search";
+import SearchEmployee, { StudentSearch, TeacherSearchResults } from "@/components/Search";
 
 
 export default function Home() {
@@ -7,6 +9,8 @@ export default function Home() {
     <div>
       <ModeToggle />
       <SearchEmployee />
+      <TeacherSearchResults/>
+      <StudentSearch />
     </div>
   );
 }
