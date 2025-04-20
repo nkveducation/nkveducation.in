@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const navLinks = ['Home', 'About', 'Course', 'Plan', 'Join Us', 'Contact'];
+const navLinks = ['Home', 'About', 'Course', 'Plan', 'Join Us', 'Contact' , 'Seminar'];
 const moreLinks = ['Team', 'Institute', 'Offer', 'Result', 'Gallery'];
 const registrationLinks = ['Tie-Up Registration', 'Registration 2'];
 
@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <Link href="/" className="text-2xl font-bold text-red-600">
-            NAV Education
+            NKV Education
           </Link>
 
           {/* Desktop Nav */}
