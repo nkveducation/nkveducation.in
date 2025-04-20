@@ -8,7 +8,6 @@ import FooterSection from '@/components/FooterSection';
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith('/dashboard');
-  const isSeminar = pathname.startsWith('/seminar');
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -22,7 +21,6 @@ export default function RootLayout({ children }) {
            {!isDashboard && <Navbar />}
         {children}
         {!isDashboard && <FooterSection />}
-        {!isSeminar && <FooterSection />}
         </ThemeProvider>
       </body>
     </html>
