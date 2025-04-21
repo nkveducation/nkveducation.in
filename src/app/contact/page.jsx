@@ -4,11 +4,30 @@ import { motion } from 'framer-motion';
 import { Mail, PhoneCall } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
+import { useState } from 'react';
 
 
 export default function ContactPage() {
     const pathname = usePathname();
     const paths = pathname.split("/").filter((p) => p);
+    const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const res = await fetch('/api/email/send-contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form)
+        });
+        const data = await res.json();
+      
+        if (data.success) {
+          alert("Message sent 💌");
+          setForm({ name: '', email: '', phone: '', message: '' });
+        } else {
+          alert("Failed to send 😢");
+        }
+      };
 
     return (
         <main className="m-0 p-0 min-w-full mt-[80px]">
@@ -46,29 +65,38 @@ export default function ContactPage() {
                         <h2 className="text-2xl font-bold mb-6 text-red-600">Contact Us</h2>
                         <form className="space-y-5">
                             <input
-                                type="text"
+                                  type="text"
+                                  value={form.name}
+                                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                                 placeholder="Full Name"
                                 className="w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-red-400"
                             />
                             <input
                                 type="tel"
+                                value={form.phone}
+                                onChange={(e) => setForm({ ...form, phone: e.target.value })}
                                 placeholder="Phone No."
                                 className="w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-red-400"
                             />
                             <input
                                 type="email"
+                                value={form.email}
+                                onChange={(e) => setForm({ ...form, email: e.target.value })}
                                 placeholder="Email"
                                 className="w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-red-400"
                             />
                             <textarea
                                 placeholder="Message"
                                 rows="4"
+                                value={form.message}
+                                onChange={(e) => setForm({ ...form, message: e.target.value })}
                                 className="w-full px-4 py-3 border rounded-md focus:ring-2 focus:ring-red-400"
                             ></textarea>
                             <motion.button
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
+                                onClick={handleSubmit}
                                 className="w-full bg-red-600 text-white py-3 rounded-md font-semibold shadow hover:bg-red-700 transition"
                             >
                                 SUBMIT YOUR QUERY

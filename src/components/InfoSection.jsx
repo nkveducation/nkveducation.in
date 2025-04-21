@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function InfoSection() {
   return (
-    <section className="py-12 px-4 md:px-8 lg:px-16 bg-white">
+    <section className="py-12 px-4 md:px-8 w-full lg:px-16 bg-white">
       <div className="max-w-6xl mx-auto">
         
         {/* Animated Colorful Heading */}
@@ -46,7 +46,7 @@ export default function InfoSection() {
         </div>
 
         {/* Info Content */}
-        <div className="flex flex-col lg:flex-row gap-15 items-center">
+        <div className="flex flex-col  lg:flex-row gap-15 items-center">
           
           <motion.div
             initial={{ opacity: 0, x: -40 }}
