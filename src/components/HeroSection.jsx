@@ -16,7 +16,7 @@ export default function HeroSection() {
     <section className="relative h-screen w-full-screen overflow-hidden">
       {/* Background Video */}
       <video
-        className="absolute inset-0 w-full-screen h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover"
         autoPlay
         muted
         loop

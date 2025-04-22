@@ -18,6 +18,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.6.0",
     "clsx": "^2.1.1",
+    "emailjs-com": "^3.2.0",
     "framer-motion": "^12.6.2",
     "lucide-react": "^0.483.0",
     "mongoose": "^8.12.2",
@@ -25,6 +26,9 @@
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
     "resend": "^4.3.0",
     "tailwind-merge": "^3.0.2",
     "tw-animate-css": "^1.2.4"

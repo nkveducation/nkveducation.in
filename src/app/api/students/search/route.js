@@ -4,21 +4,22 @@ import Student from '@/models/Student';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get('query') || '';
+  const certificateNo = searchParams.get('certificateNo');
+
+  if (!certificateNo) {
+    return NextResponse.json({ success: false, error: 'Certificate number is required.' });
+  }
 
   try {
     await dbConnect();
-    
-    const students = await Student.find({
-      $or: [
-        { fullName: { $regex: query, $options: 'i' } },
-        { rollNo: { $regex: query, $options: 'i' } },
-        { certificateNo: { $regex: query, $options: 'i' } },
-        { phoneNo: { $regex: query, $options: 'i' } }
-      ]
-    }).sort({ createdAt: -1 });
 
-    return NextResponse.json({ success: true, data: students });
+    const student = await Student.findOne({ certificateNo });
+
+    if (!student) {
+      return NextResponse.json({ success: false, error: 'Student not found.' });
+    }
+
+    return NextResponse.json({ success: true, data: student });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message });
   }
