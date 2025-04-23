@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { StudentSearch } from "@/components/Search";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { StudentSearch } from "@/components/ContactSection";
 
 // MotionCard as a separate reusable component
 const MotionCard = ({ children }) => (
