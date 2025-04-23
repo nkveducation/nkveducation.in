@@ -3,6 +3,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
+import emailjs from 'emailjs-com';
+
 
 const Gallery = [
   {img:"/seminar-img/gallery1.jpg", alt:"Beauty seminar demonstration"},
@@ -23,6 +25,7 @@ export default function Home() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -59,21 +62,54 @@ export default function Home() {
     if (!validateForm()) return;
     
     setIsSubmitting(true);
+    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      alert('Registration submitted successfully! We will contact you soon.');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        interest: ''
-      });
+      // Initialize EmailJS with your Public Key
+      emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY);
+      
+      // Send the form data using EmailJS
+      const response = await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_TOW,
+        {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          interest: getInterestLabel(formData.interest),
+          date: new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
+        }
+      );
+      
+      if (response.status === 200) {
+        setSubmitSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          interest: ''
+        });
+      }
     } catch (error) {
+      console.error('Error sending email:', error);
       alert('There was an error submitting your form. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+  
+  // Helper function to get interest label
+  const getInterestLabel = (value) => {
+    const interests = {
+      makeup: "Makeup Artistry",
+      skincare: "Skincare",
+      hairstyling: "Hair Styling",
+      all: "All Areas"
+    };
+    return interests[value] || value;
   };
 
   return (
@@ -99,7 +135,7 @@ export default function Home() {
         </div>
         <div className="relative z-10 text-center px-4">
           <h1 className="text-5xl md:text-7xl font-bold text-pink-800 mb-4">NKV Education</h1>
-          <h2 className="text-3xl md:text-5xl font-semibold text-gray-800 mb-8">Professional Beauty Seminar 2023</h2>
+          <h2 className="text-3xl md:text-5xl font-semibold text-gray-800 mb-8">Professional Beauty Seminar 2026</h2>
           <a href="#register" className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
             Register Now
           </a>
@@ -190,7 +226,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Registration Form */}
       <section id="register" className="py-20 px-4 max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-pink-700 mb-4">Register Now</h2>
@@ -201,74 +236,90 @@ export default function Home() {
         </div>
         
         <div className="bg-white rounded-xl shadow-xl p-8 md:p-12">
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div>
-                <label htmlFor="name" className="block text-gray-700 mb-2">Full Name *</label>
-                <input 
-                  type="text" 
-                  id="name" 
-                  name="name" 
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border ${formErrors.name ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
-                  required
-                />
-                {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-gray-700 mb-2">Email Address *</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
-                  required
-                />
-                {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
-              </div>
-              <div>
-                <label htmlFor="phone" className="block text-gray-700 mb-2">Phone Number *</label>
-                <input 
-                  type="tel" 
-                  id="phone" 
-                  name="phone" 
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border ${formErrors.phone ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
-                  required
-                />
-                {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
-              </div>
-              <div>
-                <label htmlFor="interest" className="block text-gray-700 mb-2">Area of Interest *</label>
-                <select 
-                  id="interest" 
-                  name="interest" 
-                  value={formData.interest}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg border ${formErrors.interest ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
-                  required
-                >
-                  <option value="">Select an option</option>
-                  <option value="makeup">Makeup Artistry</option>
-                  <option value="skincare">Skincare</option>
-                  <option value="hairstyling">Hair Styling</option>
-                  <option value="all">All of the above</option>
-                </select>
-                {formErrors.interest && <p className="text-red-500 text-sm mt-1">{formErrors.interest}</p>}
-              </div>
+          {submitSuccess ? (
+            <div className="text-center py-8">
+              <svg className="h-16 w-16 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Registration Successful!</h3>
+              <p className="text-gray-600 mb-6">Thank you for registering. We've sent a confirmation to your email and will contact you soon.</p>
+              <button
+                onClick={() => setSubmitSuccess(false)}
+                className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+              >
+                Register Another Person
+              </button>
             </div>
-            <button 
-              type="submit" 
-              disabled={isSubmitting}
-              className={`w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition duration-300 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Registration'}
-            </button>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div>
+                  <label htmlFor="name" className="block text-gray-700 mb-2">Full Name *</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.name ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
+                    required
+                  />
+                  {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-gray-700 mb-2">Email Address *</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.email ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
+                    required
+                  />
+                  {formErrors.email && <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>}
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-gray-700 mb-2">Phone Number *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.phone ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
+                    required
+                  />
+                  {formErrors.phone && <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>}
+                </div>
+                <div>
+                  <label htmlFor="interest" className="block text-gray-700 mb-2">Area of Interest *</label>
+                  <select 
+                    id="interest" 
+                    name="interest" 
+                    value={formData.interest}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.interest ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-pink-500`}
+                    required
+                  >
+                    <option value="">Select an option</option>
+                    <option value="makeup">Makeup Artistry</option>
+                    <option value="skincare">Skincare</option>
+                    <option value="hairstyling">Hair Styling</option>
+                    <option value="all">All of the above</option>
+                  </select>
+                  {formErrors.interest && <p className="text-red-500 text-sm mt-1">{formErrors.interest}</p>}
+                </div>
+              </div>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition duration-300 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Registration'}
+              </button>
+            </form>
+          )}
         </div>
       </section>
     </div>
