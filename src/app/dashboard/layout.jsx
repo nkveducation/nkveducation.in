@@ -6,7 +6,7 @@ export default function Layout({ children }) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
+      <main className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 max-w-screen w-screen">
         <SidebarTrigger />
         {children}
       </main>

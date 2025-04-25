@@ -2,9 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Search, Edit, Trash2, User } from 'lucide-react';
 
 import AddTeacher from './form/page'
 
@@ -19,121 +30,160 @@ const page = () => {
 
 export default page
 
-export function TeachersList(){
+export function TeachersList() {
   const [teachers, setTeachers] = useState([]);
-  const [filteredTeachers, setFilteredTeachers] = useState([]); // Filtered list
-  const [searchQuery, setSearchQuery] = useState(''); // Search query
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     fetchTeachers();
   }, []);
 
-  // Fetch all teachers
   const fetchTeachers = async () => {
     try {
       const response = await fetch('/api/teachers');
-      if (!response.ok) {
-        throw new Error('Failed to fetch teachers');
-      }
+      if (!response.ok) throw new Error('Failed to fetch teachers');
       const result = await response.json();
       if (result.success) {
         setTeachers(result.data);
-        setFilteredTeachers(result.data); // Initialize filtered list
+        setFilteredTeachers(result.data);
       }
     } catch (error) {
-      console.error('Error fetching teachers:', error);
+      console.error('Error:', error);
     } finally {
-      setIsLoading(false); // Set loading to false after fetch
+      setIsLoading(false);
     }
   };
 
-  // Handle Edit: Navigate to the edit page
   const handleEdit = (id) => {
     router.push(`/dashboard/teachers/${id}/edit`);
   };
 
-  // Handle Delete: Delete a teacher
   const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this teacher?')) return;
+    
     try {
       const response = await fetch(`/api/teachers/${id}`, {
         method: 'DELETE',
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete teacher');
-      }
-
-      const result = await response.json();
-      if (result.success) {
-        fetchTeachers(); // Refresh the list after deletion
-      }
+      if (!response.ok) throw new Error('Failed to delete teacher');
+      fetchTeachers();
     } catch (error) {
-      console.error('Error deleting teacher:', error);
+      console.error('Error:', error);
     }
   };
 
-  // Handle Search: Filter teachers based on search query
   const handleSearch = (query) => {
     setSearchQuery(query);
     const filtered = teachers.filter((teacher) =>
-      teacher.fullName.toLowerCase().includes(query.toLowerCase()) ||
-      teacher.teacherId.toLowerCase().includes(query.toLowerCase()) ||
-      teacher.city.toLowerCase().includes(query.toLowerCase()) ||
-      teacher.rank.toLowerCase().includes(query.toLowerCase())
+      Object.values(teacher).some(
+        (value) =>
+          typeof value === 'string' &&
+          value.toLowerCase().includes(query.toLowerCase())
+      )
     );
     setFilteredTeachers(filtered);
   };
 
   if (isLoading) {
-    return <div className="text-center mt-4">Loading...</div>;
+    return (
+      <div className="container mx-auto py-8">
+        <div className="flex items-center justify-between mb-6">
+          <Skeleton className="h-10 w-64" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-16 w-full" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-      <Card className="w-full max-w-lg shadow-lg mt-8">
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl font-semibold">Teachers List</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {/* Search Bar */}
-          <div className="mb-4">
-            <Input
-              type="text"
-              placeholder="Search teachers..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="w-full p-2 border rounded-lg"
-            />
+    <div className="container mx-auto py-8">
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="px-6 pt-6 pb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CardTitle className="text-2xl font-semibold">Teachers</CardTitle>
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search teachers..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-9"
+              />
+            </div>
           </div>
-
-          {/* Teachers List */}
-          <ul className="space-y-4">
-            {filteredTeachers.map((teacher) => (
-              <li key={teacher._id} className="p-4 border rounded-lg flex flex-col items-center text-center bg-white shadow-md">
-                <img src={teacher.photo} alt={teacher.fullName} className="w-16 h-16 rounded-full mb-2" />
-                <p className="font-semibold">{teacher.fullName}</p>
-                <p className="text-sm text-gray-600">ID: {teacher.teacherId}</p>
-                <p className="text-sm text-gray-600">City: {teacher.city}</p>
-                <p className="text-sm text-gray-600">Rank: {teacher.rank}</p>
-                <div className="mt-2 flex space-x-2">
-                  <Button
-                    onClick={() => handleEdit(teacher._id)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 text-sm"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(teacher._id)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-sm"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[100px]">Photo</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>City</TableHead>
+                <TableHead>Rank</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredTeachers.length > 0 ? (
+                filteredTeachers.map((teacher) => (
+                  <TableRow key={teacher._id} className="hover:bg-gray-50/50">
+                    <TableCell>
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={teacher.photo} alt={teacher.fullName} />
+                        <AvatarFallback>
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {teacher.fullName}
+                    </TableCell>
+                    <TableCell>{teacher.teacherId}</TableCell>
+                    <TableCell>{teacher.city}</TableCell>
+                    <TableCell>
+                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                        {teacher.rank}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(teacher._id)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(teacher._id)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-24 text-center">
+                    {searchQuery ? 'No matching teachers found' : 'No teachers available'}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
