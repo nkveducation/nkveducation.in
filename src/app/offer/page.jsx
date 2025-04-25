@@ -1,37 +1,38 @@
 'use client'
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { motion } from 'framer-motion';
-import { usePathname } from 'next/navigation';
+
+const OfferList = [
+    {
+        id: 1,
+        title: '20 Registrations',
+        description: 'Android Mobile of worth ₹15,000/- or Cash',
+        img: "/assets/images/mobile.jpg",
+    },
+    {
+        id: 2,
+        title: '100 Registrations',
+        description: 'Laptop of worth ₹40,000/- or Cash',
+        img: "/assets/images/laptop.jpg",
+    },
+    {
+        id: 3,
+        title: '200 Registrations',
+        description: 'Jupiter Scooty of worth ₹80,000/- or Cash',
+        img: "/assets/images/scooty.jpg",
+    },
+    {
+        id: 4,
+        title: '500 Registrations',
+        description: 'Hyundai i10 Car',
+        img: "/assets/images/car.jpg",
+    }
+];
 
 export default function Offer() {
-    const pathname = usePathname();
-    const paths = pathname.split("/").filter((p) => p); // ["offer"]
 
-    const OfferList = [
-        {
-            id: 1,
-            title: '20 Registrations',
-            description: 'Android Mobile of worth ₹15,000/- or Cash',
-            img: "/assets/images/mobile.jpg",
-        },
-        {
-            id: 2,
-            title: '100 Registrations',
-            description: 'Laptop of worth ₹40,000/- or Cash',
-            img: "/assets/images/laptop.jpg",
-        },
-        {
-            id: 3,
-            title: '200 Registrations',
-            description: 'Jupiter Scooty of worth ₹80,000/- or Cash',
-            img: "/assets/images/scooty.jpg",
-        },
-        {
-            id: 4,
-            title: '500 Registrations',
-            description: 'Hyundai i10 Car',
-            img: "/assets/images/car.jpg",
-        }
-    ];
+
+    
 
     return (
         <main className="bg-white min-h-screen m-0 p-0 mt-[80px] min-w-full">
@@ -46,14 +47,9 @@ export default function Offer() {
                 }}
             >
                 <h1 className="text-3xl text-white font-bold">Exciting Offers</h1>
-                <div className="bg-white text-black px-4 py-2 rounded-full shadow-md">
-                    <span className="text-red-700 font-bold">Home</span>
-                    {paths.map((p, i) => (
-                        <span key={i} className="text-gray-600">
-                            {" "} / {p.charAt(0).toUpperCase() + p.slice(1)}
-                        </span>
-                    ))}
-                </div>
+                <Suspense fallback={<div>Loading breadcrumbs...</div>}>
+                    <Breadcrumbs />
+                </Suspense>
             </div>
 
             {/* Offers Section */}

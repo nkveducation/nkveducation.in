@@ -1,12 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { usePathname } from "next/navigation";
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function TeacherForm() {
-  const pathname = usePathname();
-  const paths = pathname.split("/").filter((p) => p);
   const [form, setForm] = useState({
     teacherId: '', fullName: '', fatherName: '', dob: '',
     aadhar: '', email: '', phone: '', address: '', state: '',

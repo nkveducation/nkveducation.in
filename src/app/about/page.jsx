@@ -1,13 +1,10 @@
 "use client";
 
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function About() {
-    const pathname = usePathname();
-    const paths = pathname.split("/").filter((p) => p); // ["about"]
-
     return (
         <main className="m-0 p-0 min-w-full mt-[80px]">
             <div
@@ -16,15 +13,8 @@ export default function About() {
           background: 'linear-gradient(to right, #dc2626, #b91c1c)',
         }}
       >
-        <h1 className="text-3xl font-bold mb-4 md:mb-0">Our Courses</h1>
-        <div className="bg-white text-black px-4 py-2 rounded-full shadow-md">
-          <Link href="/" className="text-red-700 font-bold">Home</Link>
-          {paths.map((p, i) => (
-            <span key={i} className="text-gray-600">
-              {" "}/ {p.charAt(0).toUpperCase() + p.slice(1)}
-            </span>
-          ))}
-        </div>
+        <h1 className="text-3xl font-bold mb-4 md:mb-0">About us</h1>
+          <Breadcrumbs/>
       </div>
 
              <section className="py-16 px-4 sm:px-6 lg:px-8 w-full bg-white/95 backdrop-blur-sm">

@@ -43,3 +43,14 @@ export async function POST(request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    await dbConnect();
+
+    const employees = await Employee.find({});
+    return NextResponse.json({ success: true, data: employees }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

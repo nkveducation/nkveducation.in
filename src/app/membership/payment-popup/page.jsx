@@ -8,7 +8,7 @@ export default function PaymentPopupPage() {
   const handlePayment = async () => {
     const data = JSON.parse(localStorage.getItem('formData') || '{}');
 
-    if (!data || !data.email || !data.fullName) {
+    if (!data?.email || !data?.fullName) {
       toast.error('Form data missing');
       window.close();
       return;
@@ -31,7 +31,7 @@ export default function PaymentPopupPage() {
           .then(() => {
             toast.success('Payment Successful & Email Sent!');
             localStorage.removeItem('formData');
-            setTimeout(() => window.close(), 2000); // Close after 2s
+            setTimeout(() => window.close(), 2000);
           })
           .catch(() => {
             toast.error('Email send failed');

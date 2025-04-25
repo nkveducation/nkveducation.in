@@ -8,6 +8,7 @@ import { useState } from 'react';
 import emailjs from 'emailjs-com';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function ContactPage() {
   const pathname = usePathname();
@@ -48,17 +49,15 @@ export default function ContactPage() {
         }}
       >
         <h1 className="text-3xl font-bold">Contact Us</h1>
-        <div className="bg-white text-black px-4 py-2 rounded-full shadow-md">
-          <Link href="/" className="text-red-700 font-bold">Home</Link>
-          {paths.map((p, i) => (
-            <span key={i} className="text-gray-600">{" "} / {p.charAt(0).toUpperCase() + p.slice(1)}</span>
-          ))}
-        </div>
+        <Suspense fallback={<div>Loading breadcrumbs...</div>}>
+                    <Breadcrumbs />
+                </Suspense>
+
       </div>
 
       <section className="bg-white py-12 px-4 md:px-12">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-          
+
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -120,7 +119,7 @@ export default function ContactPage() {
           >
             <h2 className="text-2xl font-bold mb-4 text-red-600">Our Contact Information</h2>
             <p className="mb-6 text-gray-600">
-              Have questions or need assistance? Reach out to us through any of these channels. 
+              Have questions or need assistance? Reach out to us through any of these channels.
               Our team is ready to help you with your inquiries.
             </p>
 
@@ -159,8 +158,8 @@ export default function ContactPage() {
         </div>
 
         {/* Toast Notifications */}
-        <ToastContainer 
-          position="top-right" 
+        <ToastContainer
+          position="top-right"
           autoClose={3000}
           toastClassName="bg-white text-gray-800 shadow-lg border border-gray-200"
           progressClassName="bg-red-600"
