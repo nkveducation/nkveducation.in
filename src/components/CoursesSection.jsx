@@ -1,32 +1,54 @@
-'use client';
-import { motion } from 'framer-motion';
-import { BriefcaseBusiness, LaptopMinimal, UserRoundCheck } from 'lucide-react';
+"use client";
+
+import { Suspense } from "react";
+import { motion } from "framer-motion";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { BriefcaseBusiness, LaptopMinimal, UserRoundCheck } from "lucide-react";
 
 const courses = [
   {
     id: 1,
     icon: <LaptopMinimal className="w-8 h-8 text-white" />,
-    title: 'COMPUTER COURSES',
-    desc: 'A comprehensive program designed to equip individuals with essential computer skills.',
+    title: "COMPUTER COURSES",
+    desc: "A comprehensive program designed to equip individuals with essential computer skills.",
   },
   {
     id: 2,
     icon: <UserRoundCheck className="w-8 h-8 text-white" />,
-    title: 'PROFESSIONAL COURSES',
-    desc: 'Boost your career with courses tailored for business, finance, and soft skills development.',
+    title: "PROFESSIONAL COURSES",
+    desc: "Boost your career with courses tailored for business, finance, and soft skills development.",
   },
   {
     id: 3,
     icon: <BriefcaseBusiness className="w-8 h-8 text-white" />,
-    title: 'TRADING COURSES',
-    desc: 'Master the art of stock and crypto trading with our in-depth and practical curriculum.',
+    title: "TRADING COURSES",
+    desc: "Master the art of stock and crypto trading with our in-depth and practical curriculum.",
   },
 ];
 
+// ✅ This is the main component
 export default function Course() {
-
   return (
-    <div className="mt-[80px] min-w-full bg-white">
+    <Suspense fallback={<div>Loading courses...</div>}>
+      <CourseContent />
+    </Suspense>
+  );
+}
+
+// ✅ This is the actual content component
+export function CourseContent() {
+  return (
+    <div className="mt-[80px] min-w-full">
+      {/* Header Section */}
+      <div
+        className="text-white px-6 py-8 flex flex-col md:flex-row justify-between items-center"
+        style={{
+          background: "linear-gradient(to right, #dc2626, #b91c1c)",
+        }}
+      >
+        <h1 className="text-3xl font-bold">Our Courses</h1>
+        <Breadcrumbs />
+      </div>
 
       {/* Courses Section */}
       <section className="py-16 px-4 md:px-8 bg-white">
@@ -58,7 +80,7 @@ export default function Course() {
                   {course.title}
                 </h3>
                 <p className="text-gray-600 text-center mb-6">{course.desc}</p>
-                
+
                 <div className="text-center">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
