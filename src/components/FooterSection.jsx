@@ -1,4 +1,4 @@
-import { motion} from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function FooterSection() {
   return (
@@ -21,19 +21,42 @@ export default function FooterSection() {
               Our Professional Course focuses on specialized areas of study, providing in-depth knowledge and practical skills to excel in specific industries.
             </p>
             <div className="flex space-x-4">
-              {['facebook', 'twitter', 'instagram', 'linkedin'].map((social) => (
-                <a 
-                  key={social}
-                  href="#" 
-                  className="w-10 h-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-all hover:scale-110"
-                >
-                  <img 
-                    src={`/assets/svg/${social}-svgrepo-com.svg`} 
-                    alt={social} 
-                    className="w-5 h-5 filter brightness-0 invert"
-                  />
-                </a>
-              ))}
+              <a 
+                href="https://www.facebook.com/nkveducation?mibextid=ZbWKwL" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-all hover:scale-110"
+              >
+                <img 
+                  src={`/assets/svg/facebook-svgrepo-com.svg`} 
+                  alt="Facebook" 
+                  className="w-5 h-5 filter brightness-0 invert"
+                />
+              </a>
+              <a 
+                href="https://instagram.com/nkveducation_?igshid=MzNlNGNkZWQ4Mg==" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-all hover:scale-110"
+              >
+                <img 
+                  src={`/assets/svg/instagram-svgrepo-com.svg`} 
+                  alt="Instagram" 
+                  className="w-5 h-5 filter brightness-0 invert"
+                />
+              </a>
+              <a 
+                href="https://youtube.com/@navodayaeducation" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-all hover:scale-110"
+              >
+                <img 
+                  src={`/assets/svg/youtube.svg`} 
+                  alt="YouTube" 
+                  className="w-5 h-5 filter brightness-0 invert"
+                />
+              </a>
             </div>
           </div>
           
@@ -67,20 +90,13 @@ export default function FooterSection() {
                 <svg className="w-5 h-5 text-white mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                 </svg>
-                info@nkveducation.in
+                nkveducation@gmail.com
               </li>
               <li className="flex items-start hover:text-white transition">
                 <svg className="w-5 h-5 text-white mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                 </svg>
-                +91 6397 12XXXX
-              </li>
-              <li className="flex items-start hover:text-white transition">
-                <svg className="w-5 h-5 text-white mr-2 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                123 Education Street, Learning City
+                +91 9557273142
               </li>
             </ul>
           </div>

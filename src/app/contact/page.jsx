@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { Suspense } from 'react';
-
+import { Facebook, Instagram, Youtube } from 'lucide-react'; // Added social media icons
 
 export default function ContactPage() {
   return (
@@ -74,14 +74,29 @@ function ContactContent() {
                 <span className="p-3 bg-red-600 rounded-full text-white"><Mail className="w-5 h-5" /></span>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p className="font-semibold text-red-600">info@nkleducation.in</p>
+                  <a href="mailto:nkveducation@gmail.com" className="font-semibold text-red-600 hover:underline">nkveducation@gmail.com</a>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-red-50 rounded-lg">
                 <span className="p-3 bg-red-600 rounded-full text-white"><PhoneCall className="w-5 h-5" /></span>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Phone</p>
-                  <p className="font-semibold text-red-600">+91 6397 12XXXX</p>
+                  <a href="tel:+919557273142" className="font-semibold text-red-600 hover:underline">+91 9557273142</a>
+                </div>
+              </div>
+              
+              <div className="pt-4">
+                <h3 className="text-lg font-semibold mb-3 text-red-600">Follow Us</h3>
+                <div className="flex gap-4">
+                  <a href="https://www.facebook.com/nkveducation?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                  <a href="https://instagram.com/nkveducation_?igshid=MzNlNGNkZWQ4Mg==" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                  <a href="https://youtube.com/@navodayaeducation" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
+                    <Youtube className="w-5 h-5" />
+                  </a>
                 </div>
               </div>
             </div>
