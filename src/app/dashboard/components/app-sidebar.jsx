@@ -17,6 +17,7 @@ const menuItems = [
   { title: "Teachers", link: "teachers", icon: Briefcase },
   { title: "Employees", link: "employee", icon: Briefcase },
   { title: "Student", link: "students", icon: GraduationCap },
+  { title: "Gallery", link: "gallery", icon: GraduationCap },
 ];
 
 export function AppSidebar() {

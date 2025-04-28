@@ -49,3 +49,73 @@ export async function GET(){
     return NextResponse.json({success: false, error: error.message}, {status: 500})
   } 
 }
+
+export async function PUT(request, { params }) {
+  await connectDB();
+
+  try {
+    const image = await Image.findById(params.id);
+    if (!image) {
+      return NextResponse.json(
+        { success: false, message: 'Image not found' },
+        { status: 404 }
+      );
+    }
+
+    const formData = await request.formData();
+    const title = formData.get('title');
+    const description = formData.get('description');
+    const file = formData.get('image');
+
+    let updateData = {
+      title: title || image.title,
+      description: description || image.description
+    };
+
+    // If new image is provided
+    if (file) {
+      // First delete old image from Cloudinary
+      await cloudinary.v2.uploader.destroy(image.publicId);
+
+      // Upload new image
+      const buffer = await file.arrayBuffer();
+      const bytes = Buffer.from(buffer);
+
+      const result = await new Promise((resolve, reject) => {
+        cloudinary.v2.uploader
+          .upload_stream(
+            {
+              folder: 'page-img',
+              resource_type: 'auto'
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          )
+          .end(bytes);
+      });
+
+      updateData.imageUrl = result.secure_url;
+      updateData.publicId = result.public_id;
+    }
+
+    // Update in MongoDB
+    const updatedImage = await Image.findByIdAndUpdate(
+      params.id,
+      updateData,
+      { new: true }
+    );
+
+    return NextResponse.json(
+      { success: true, data: updatedImage },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { success: false, message: 'Error updating image', error: error.message },
+      { status: 500 }
+    );
+  }
+}
