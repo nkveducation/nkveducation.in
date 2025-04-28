@@ -73,7 +73,7 @@ function ImageList() {
       {isLoading ? (
         <div className="grid place-items-center h-64">
           <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-gray-200 h-12 w-12"></div>
+            <div className="rounded-full bg-red-500 h-12 w-12"></div>
           </div>
         </div>
       ) : images.length === 0 ? (
