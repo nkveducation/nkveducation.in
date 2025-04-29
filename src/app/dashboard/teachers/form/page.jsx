@@ -21,6 +21,8 @@ export default function AddTeacher() {
     photo: '',
     rank: '',
   });
+  const [isUploading, setIsUploading] = useState(false);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,6 +37,7 @@ export default function AddTeacher() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
 
     try {
       const response = await fetch('/api/teachers', {
@@ -45,6 +48,11 @@ export default function AddTeacher() {
         body: JSON.stringify(formData),
       });
 
+      if (!response.ok) {
+        console.error('HTTP error:', response.status, response.statusText);
+        throw new Error('Failed to submit form');
+      }
+
       const result = await response.json();
       if (result.success) {
         router.push('/dashboard/teachers'); // Redirect to teachers list
@@ -53,6 +61,8 @@ export default function AddTeacher() {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+    } finally {
+      setIsUploading(false); // Ensure isUploading is reset in all cases
     }
   };
 
@@ -143,8 +153,11 @@ export default function AddTeacher() {
             value={formData.rank}
             onChange={handleChange}
           />
-          <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white cursor-pointer">
-            Submit
+          <Button type="submit"
+            disabled={isUploading}
+
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white cursor-pointer">
+            {isUploading ? 'Registering...' : 'Register Teacher'}
           </Button>
         </form>
       </div>

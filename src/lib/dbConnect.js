@@ -19,21 +19,23 @@ async function dbConnect() {
 
   if (!cached.promise) {
     const opts = {
+      dbName: 'test', // Explicitly specify your database
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      bufferCommands: false,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log('Connected to MongoDB database: test');
       return mongoose;
     });
   }
 
   try {
     cached.conn = await cached.promise;
-    console.log('Connected to MongoDB');
     return cached.conn;
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error.message);
+    console.error('MongoDB connection error:', error);
     throw error;
   }
 }

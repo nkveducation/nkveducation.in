@@ -22,6 +22,7 @@ export default function EmployeeForm() {
     photo: null,
   });
   const [imagePreview, setImagePreview] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,13 +40,37 @@ export default function EmployeeForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
-    const result = await response.json();
-    console.log(result);
+    setIsUploading(true);
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const result = await response.json();
+      console.log(result);
+      if (result.success) {
+        alert('Employee registered successfully!');
+        setFormData({
+          fullName: '',
+          fatherName: '',
+          empId: '',
+          instituteName: '',
+          instituteAddress: '',
+          aadhar: '',
+          city: '',
+          rank: '',
+          phone: '',
+          sponsorCode: '',
+          photo: null,
+        });
+        setImagePreview('');
+      } else {
+        alert('Error registering employee. Please try again.');
+      }
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -127,8 +152,9 @@ export default function EmployeeForm() {
               <Button
                 type="submit"
                 className="w-full py-6 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-lg font-medium shadow-md transition-all hover:shadow-lg"
+                disabled={isUploading}
               >
-                Submit Registration
+                {isUploading ? 'Registering...' : 'Register Employee'}
               </Button>
             </div>
           </form>

@@ -1,33 +1,45 @@
 'use client';
-
-import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
-const InfoCard = ({ label, value }) => (
-  <div className="space-y-1 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</p>
-    <p className="font-medium text-gray-900">{value || "—"}</p>
-  </div>
-);
+function InfoCard({ label, value }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">{label}</p>
+      <p className="text-sm font-medium text-gray-900">{value || "—"}</p>
+    </div>
+  );
+}
 
 export default function EmployeeSearchPage() {
   const params = useParams();
+  const router = useRouter();
   const empId = params.empId;
   const [employee, setEmployee] = useState(null);
   const [relatedEmployees, setRelatedEmployees] = useState([]);
+  const [relatedTeachers, setRelatedTeachers] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentTeachersPage, setCurrentTeachersPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Pagination for employees
   const paginatedEmployees = relatedEmployees.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // Pagination for teachers
+  const paginatedTeachers = relatedTeachers.slice(
+    (currentTeachersPage - 1) * itemsPerPage,
+    currentTeachersPage * itemsPerPage
+  );
+
   const totalPages = Math.ceil(relatedEmployees.length / itemsPerPage);
+  const totalTeachersPages = Math.ceil(relatedTeachers.length / itemsPerPage);
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -37,7 +49,8 @@ export default function EmployeeSearchPage() {
 
         if (result.success) {
           setEmployee(result.data.employee);
-          setRelatedEmployees(result.data.relatedEmployees);
+          setRelatedEmployees(result.data.relatedEmployees || []);
+          setRelatedTeachers(result.data.relatedTeachers || []);
         } else {
           setError(result.error || 'Employee not found');
         }
@@ -48,12 +61,14 @@ export default function EmployeeSearchPage() {
       }
     };
 
-    fetchEmployee();
+    if (empId) {
+      fetchEmployee();
+    }
   }, [empId]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white ">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto"></div>
           <p className="text-gray-600">Loading employee details...</p>
@@ -147,15 +162,15 @@ export default function EmployeeSearchPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                   {[
                     ["Full Name", employee.fullName],
-                    ["Father's Name", employee.fatherName || "—"],
+                    ["Father's Name", employee.fatherName],
                     ["Employee ID", employee.empId],
-                    ["Institute Name", employee.instituteName || "—"],
-                    ["Institute Address", employee.instituteAddress || "—"],
-                    ["Aadhar Number", employee.aadhar || "—"],
-                    ["City", employee.city || "—"],
-                    ["Rank", employee.rank || "—"],
-                    ["Phone", employee.phone || "—"],
-                    ["Sponsor Code", employee.sponsorCode || "—"],
+                    ["Institute Name", employee.instituteName],
+                    ["Institute Address", employee.instituteAddress],
+                    ["Aadhar Number", employee.aadhar],
+                    ["City", employee.city],
+                    ["Rank", employee.rank],
+                    ["Phone", employee.phone],
+                    ["Sponsor Code", employee.sponsorCode],
                   ].map(([label, value]) => (
                     <InfoCard key={label} label={label} value={value} />
                   ))}
@@ -163,17 +178,97 @@ export default function EmployeeSearchPage() {
               </div>
 
               <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-              <div className="inline-flex items-center bg-red-50 px-4 py-2 rounded-full border border-red-200">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span className="font-medium text-red-700">Verified Employee</span>
+                <div className="inline-flex items-center bg-red-50 px-4 py-2 rounded-full border border-red-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-medium text-red-700">Verified Employee</span>
+                </div>
               </div>
-            </div>
             </div>
           </div>
 
-          {/* Related Employees */}
+          {/* Related Teachers Section */}
+          {relatedTeachers.length > 0 && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="p-6 md:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <h2 className="text-xl font-semibold text-gray-900">Related Teachers ({relatedTeachers.length})</h2>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {paginatedTeachers.map((teacher) => (
+                    <motion.div 
+                      key={teacher._id}
+                      whileHover={{ y: -2 }}
+                      className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-all"
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        {teacher.photo && (
+                          <img 
+                            src={teacher.photo} 
+                            alt={teacher.fullName} 
+                            className="w-10 h-10 object-cover rounded-full border-2 border-white shadow-sm"
+                          />
+                        )}
+                        <h3 className="font-medium text-gray-900">{teacher.fullName}</h3>
+                        {teacher.isVerified && (
+                          <span className="ml-auto px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded">Verified</span>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <div>
+                          <p className="text-xs text-gray-500">Teacher ID</p>
+                          <p className="text-sm font-medium">{teacher.teacherId || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Sponsor Code</p>
+                          <p className="text-sm font-medium">{teacher.sponsorCode || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Subject</p>
+                          <p className="text-sm font-medium">{teacher.subject || "—"}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {totalTeachersPages > 1 && (
+                  <div className="mt-6 flex justify-center space-x-2">
+                    <button 
+                      onClick={() => setCurrentTeachersPage((p) => Math.max(p - 1, 1))} 
+                      className="px-3 py-1 text-sm border rounded hover:bg-gray-100 disabled:opacity-50"
+                      disabled={currentTeachersPage === 1}
+                    >
+                      Prev
+                    </button>
+                    {[...Array(totalTeachersPages)].map((_, i) => (
+                      <button 
+                        key={i}
+                        onClick={() => setCurrentTeachersPage(i + 1)} 
+                        className={`px-3 py-1 text-sm border rounded ${currentTeachersPage === i + 1 ? 'bg-red-600 text-white' : 'hover:bg-gray-100'}`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                    <button 
+                      onClick={() => setCurrentTeachersPage((p) => Math.min(p + 1, totalTeachersPages))} 
+                      className="px-3 py-1 text-sm border rounded hover:bg-gray-100 disabled:opacity-50"
+                      disabled={currentTeachersPage === totalTeachersPages}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Related Employees Section */}
           {relatedEmployees.length > 0 && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6 md:p-8">

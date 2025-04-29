@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 const navLinks = ['Home', 'About', 'Course', 'Plan', 'Join Us', 'Contact', 'Seminar'];
 const moreLinks = ['Team', 'Institute', 'Offer', 'Result', 'Gallery'];
@@ -20,6 +21,12 @@ export default function Navbar() {
   const [showMore, setShowMore] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const closeAllDropdowns = () => {
+    setShowRegistration(false);
+    setShowMore(false);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -27,10 +34,20 @@ export default function Navbar() {
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       className="bg-white/90 backdrop-blur-md border-b border-gray-100 fixed w-full z-50 h-[80px] top-0 py-4 shadow-md"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center h-full">
-          <Link href="/" className="text-2xl font-bold text-red-600 tracking-tight">
-            NKV<span className="text-gray-900">Education</span>
+          <Link 
+            href="/" 
+            className="text-2xl font-bold text-red-600 tracking-tight"
+            onClick={closeAllDropdowns}
+          >
+            <Image 
+              src="/logo.png" 
+              alt="Logo" 
+              width={60} 
+              height={60} 
+              className="inline-block mr-2" 
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -39,8 +56,9 @@ export default function Navbar() {
               {navLinks.map((item) => (
                 <Link
                   key={item}
-                  href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}
+                  href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
                   className="relative group font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                  onClick={closeAllDropdowns}
                 >
                   <span className="relative">
                     {item}
@@ -56,6 +74,10 @@ export default function Navbar() {
                     setShowRegistration(!showRegistration);
                     setShowMore(false);
                   }}
+                  onMouseEnter={() => {
+                    setShowRegistration(true);
+                    setShowMore(false);
+                  }}
                   className="flex items-center gap-1 font-medium text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   Registration
@@ -69,14 +91,15 @@ export default function Navbar() {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className="absolute mt-2 bg-white shadow-lg rounded-lg w-56 py-2 border border-gray-100 z-50"
+                      className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg w-56 py-2 border border-gray-100 z-50"
                       onMouseLeave={() => setShowRegistration(false)}
                     >
                       {registrationLinks.map((r, i) => (
                         <Link
                           key={i}
-                          href={`/registration/${i + 1}`}
+                          href={`/registration/${r.toLowerCase().replace(/\s+/g, '-')}`}
                           className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors"
+                          onClick={closeAllDropdowns}
                         >
                           {r}
                         </Link>
@@ -93,6 +116,10 @@ export default function Navbar() {
                     setShowMore(!showMore);
                     setShowRegistration(false);
                   }}
+                  onMouseEnter={() => {
+                    setShowMore(true);
+                    setShowRegistration(false);
+                  }}
                   className="flex items-center gap-1 font-medium text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   More
@@ -106,7 +133,7 @@ export default function Navbar() {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className="absolute mt-2 bg-white shadow-lg rounded-lg w-48 py-2 border border-gray-100 z-50"
+                      className="absolute left-0 mt-2 bg-white shadow-lg rounded-lg w-48 py-2 border border-gray-100 z-50"
                       onMouseLeave={() => setShowMore(false)}
                     >
                       {moreLinks.map((item) => (
@@ -114,6 +141,7 @@ export default function Navbar() {
                           key={item}
                           href={`/${item.toLowerCase()}`}
                           className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 transition-colors"
+                          onClick={closeAllDropdowns}
                         >
                           {item}
                         </Link>
@@ -127,6 +155,7 @@ export default function Navbar() {
             <Link
               href="/contact"
               className="px-4 py-2 bg-red-600 text-white rounded-md font-medium hover:bg-red-700 transition-colors"
+              onClick={closeAllDropdowns}
             >
               Get Started
             </Link>
@@ -153,20 +182,20 @@ export default function Navbar() {
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="lg:hidden bg-white border-t border-gray-100 overflow-hidden"
           >
-            <div className="px-6 py-4 space-y-1">
+            <div className="px-4 sm:px-6 py-2 space-y-1">
               {navLinks.map((item) => (
                 <Link
                   key={item}
-                  href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}
+                  href={item === 'Home' ? '/' : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
                   className="block py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={closeAllDropdowns}
                 >
                   {item}
                 </Link>
               ))}
 
               {/* Registration Dropdown */}
-              <div className="py-2">
+              <div className="py-1">
                 <button
                   onClick={() => setShowRegistration(!showRegistration)}
                   className="w-full flex justify-between items-center py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
@@ -174,24 +203,31 @@ export default function Navbar() {
                   <span>Registration</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${showRegistration ? 'rotate-180' : ''}`} />
                 </button>
-                {showRegistration && (
-                  <div className="pl-6 mt-1 space-y-1">
-                    {registrationLinks.map((r, i) => (
-                      <Link
-                        key={i}
-                        href={`/registration/${i + 1}`}
-                        className="block py-2.5 px-4 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {r}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {showRegistration && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pl-6 overflow-hidden"
+                    >
+                      {registrationLinks.map((r, i) => (
+                        <Link
+                          key={i}
+                          href={`/registration/${r.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="block py-2.5 px-4 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                          onClick={closeAllDropdowns}
+                        >
+                          {r}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* More Dropdown */}
-              <div className="py-2">
+              <div className="py-1">
                 <button
                   onClick={() => setShowMore(!showMore)}
                   className="w-full flex justify-between items-center py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
@@ -199,26 +235,33 @@ export default function Navbar() {
                   <span>More</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${showMore ? 'rotate-180' : ''}`} />
                 </button>
-                {showMore && (
-                  <div className="pl-6 mt-1 space-y-1">
-                    {moreLinks.map((item) => (
-                      <Link
-                        key={item}
-                        href={`/${item.toLowerCase()}`}
-                        className="block py-2.5 px-4 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {item}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+                <AnimatePresence>
+                  {showMore && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pl-6 overflow-hidden"
+                    >
+                      {moreLinks.map((item) => (
+                        <Link
+                          key={item}
+                          href={`/${item.toLowerCase()}`}
+                          className="block py-2.5 px-4 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                          onClick={closeAllDropdowns}
+                        >
+                          {item}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               <Link
                 href="/contact"
-                className="block mt-4 py-2.5 px-4 bg-red-600 text-white text-center rounded-md font-medium hover:bg-red-700 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                className="block mt-2 mb-4 py-2.5 px-4 bg-red-600 text-white text-center rounded-md font-medium hover:bg-red-700 transition-colors"
+                onClick={closeAllDropdowns}
               >
                 Get Started
               </Link>
