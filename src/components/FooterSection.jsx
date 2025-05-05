@@ -74,7 +74,7 @@ export default function FooterSection() {
                   />
                 </motion.a>
                 <motion.a
-                  href="https://youtube.com/@navodayaeducation"
+                  href="https://youtube.com/@nkveducationpvtltd?si=se3AtqjmG3sf9V0E"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-all"

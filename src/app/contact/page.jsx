@@ -94,7 +94,7 @@ function ContactContent() {
                   <a href="https://instagram.com/nkveducation_?igshid=MzNlNGNkZWQ4Mg==" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
                     <Instagram className="w-5 h-5" />
                   </a>
-                  <a href="https://youtube.com/@navodayaeducation" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
+                  <a href="https://youtube.com/@nkveducationpvtltd?si=se3AtqjmG3sf9V0E" target="_blank" rel="noopener noreferrer" className="p-3 bg-red-100 rounded-full text-red-600 hover:bg-red-200 transition-colors">
                     <Youtube className="w-5 h-5" />
                   </a>
                 </div>
