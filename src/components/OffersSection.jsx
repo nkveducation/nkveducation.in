@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function OffersSection() {
@@ -13,7 +14,8 @@ export default function OffersSection() {
           throw new Error('Failed to fetch offers');
         }
         const data = await response.json();
-        setOffers(data);
+        setOffers(data.data);
+        console.log(data.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -71,17 +73,17 @@ export default function OffersSection() {
             Limited-time deals crafted just for you
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {offers.map((offer) => (
-            <div 
-              key={offer.id} 
+          {offers.map((offer, index) => (
+            <div
+              key={index}
               className="group relative bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-500 hover:shadow-xl"
             >
               <div className="h-60 relative overflow-hidden">
-                <img 
-                  src={getImageUrl(offer.imageUrl)} 
-                  alt={offer.title} 
+                <img
+                  src={getImageUrl(offer.imageUrl)}
+                  alt={offer.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
@@ -92,7 +94,7 @@ export default function OffersSection() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <h3 className="font-bold text-xl mb-3 text-gray-800 group-hover:text-blue-600 transition-colors">
                   {offer.title}
@@ -101,16 +103,35 @@ export default function OffersSection() {
                   {offer.description}
                 </p>
                 <div className="flex justify-between items-center">
-                  <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-full hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg">
-                    Claim Now
-                  </button>
+
                   <span className="text-xs text-gray-500">Offer ends soon</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        <div className="mt-12 text-center">
+          <Link href="/offer" >
+            <button className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-red-500 text-red-500 font-semibold rounded-full hover:bg-red-500 hover:text-white transition-all shadow hover:shadow-lg cursor-pointer">
+              View All Offers
+              <svg
+                className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </button>
+          </Link>
+        </div>
+
       </div>
-    </section>
+    </section >
   );
 }

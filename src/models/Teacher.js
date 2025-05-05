@@ -1,24 +1,24 @@
 import mongoose from 'mongoose';
 
-const employeeSchema = new mongoose.Schema({
+const teacherSchema = new mongoose.Schema({
+  teacherId: String,
   fullName: String,
-  fatherName: String,
-  empId: { type: String, unique: true },
-  instituteName: String,
-  instituteAddress: String,
-  aadhar: String,
+  dob: String,
+  phoneNo: String,
+  email: String,
   city: String,
+  state: String,
+  businessname: String,
+  businessaddress: String,
+  sponsorcode: String, // Changed to lowercase to match your schema
+  photo: String, // Cloudinary URL
   rank: String,
-  phone: String,
-  sponsorCode: String,
-  photo: String,
   isVerified: { type: Boolean, default: false }
-}, { collection: 'employees' }); // Explicit collection name
+}, { collection: 'teachers' });
 
-// Create index for faster queries
-employeeSchema.index({ empId: 1 });
-employeeSchema.index({ sponsorCode: 1 });
+// Create index on sponsorcode (lowercase to match schema)
+teacherSchema.index({ sponsorcode: 1 });
 
-const Employee = mongoose.models.Employee || mongoose.model('Employee', employeeSchema);
+const Teacher = mongoose.models.Teacher || mongoose.model('Teacher', teacherSchema);
 
-export default Employee;
+export default Teacher;

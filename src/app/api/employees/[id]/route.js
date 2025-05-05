@@ -50,3 +50,27 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+
+export async function PUT(req, { params }) {
+  await dbConnect();
+
+  try {
+    const { id } = params;
+    const body = await req.json();
+
+    const updatedEmployee = await Employee.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedEmployee) {
+      return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(updatedEmployee, { status: 200 });
+  } catch (error) {
+    console.error('PUT /api/employees/:id error:', error);
+    return NextResponse.json({ error: 'Server error', details: error.message }, { status: 500 });
+  }
+}

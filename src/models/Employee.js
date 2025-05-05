@@ -1,9 +1,10 @@
+// models/Employee.js
 import mongoose from 'mongoose';
 
 const employeeSchema = new mongoose.Schema({
   fullName: String,
   fatherName: String,
-  empId: { type: String, unique: true },
+  empId: { type: String}, // Remove index: true if present
   instituteName: String,
   instituteAddress: String,
   aadhar: String,
@@ -13,12 +14,10 @@ const employeeSchema = new mongoose.Schema({
   sponsorCode: String,
   photo: String,
   isVerified: { type: Boolean, default: false }
-}, { collection: 'employees' }); // Explicit collection name
+}, { collection: 'employees' });
 
-// Create index for faster queries
-employeeSchema.index({ empId: 1 });
+
+employeeSchema.index({ empId: 1 }, { unique: true }); // Use index with unique explicitly
 employeeSchema.index({ sponsorCode: 1 });
-
 const Employee = mongoose.models.Employee || mongoose.model('Employee', employeeSchema);
-
 export default Employee;
