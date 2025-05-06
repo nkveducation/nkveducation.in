@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Link from 'next/link';
-import emailjs from 'emailjs-com';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
@@ -18,11 +17,11 @@ const fadeUp = {
 };
 
 const plans = [
-  { id: 'basic', name: 'Basic', price: 4999, features: ['Basic features'] },
-  { id: 'standard', name: 'Standard', price: 9999, features: ['Standard features'] },
-  { id: 'premium', name: 'Premium', price: 19999, features: ['Premium features'] },
-  { id: 'vip', name: 'VIP', price: 49999, features: ['VIP features'] },
-  { id: 'provip', name: 'Pro VIP', price: 99999, features: ['All premium features'] },
+  { id: 'basic', name: 'Basic', price: 4999, features: ['Basic features'], available: true },
+  { id: 'standard', name: 'Standard', price: 9999, features: ['Standard features'], available: true },
+  { id: 'premium', name: 'Premium', price: 19999, features: ['Premium features'], available: true },
+  { id: 'vip', name: 'VIP', price: 49999, features: ['VIP features'], available: false },
+  { id: 'provip', name: 'Pro VIP', price: 99999, features: ['All premium features'], available: false },
 ];
 
 export default function RegisterPage() {
@@ -61,17 +60,20 @@ export default function RegisterPage() {
   };
 
   const handlePayment = async (plan) => {
+    if (!plan.available) {
+      toast.info(`${plan.name} plan is coming soon!`);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setForm({ ...form, selectedPlan: plan.id });
   
-      // 1. Verify Razorpay is loaded
       if (!window.Razorpay) {
         const loaded = await loadRazorpay();
         if (!loaded) throw new Error("Failed to load Razorpay");
       }
   
-      // 2. Create Order
       const orderResponse = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -89,7 +91,6 @@ export default function RegisterPage() {
       const orderData = await orderResponse.json();
       if (!orderData.success) throw new Error(orderData.message || "Order creation failed");
   
-      // 3. Payment Options
       const options = {
         key: process.env.RAZORPAY_KEY_ID,
         amount: orderData.order.amount,
@@ -208,12 +209,21 @@ export default function RegisterPage() {
                 {plans.map((plan) => (
                   <motion.div
                     key={plan.id}
-                    whileHover={{ scale: 1.02 }}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                      form.selectedPlan === plan.id ? 'border-red-500 bg-red-50' : 'border-gray-200 hover:border-red-300'
+                    whileHover={plan.available ? { scale: 1.02 } : {}}
+                    className={`border rounded-lg p-4 transition-all relative ${
+                      form.selectedPlan === plan.id ? 'border-red-500 bg-red-50' : 'border-gray-200'
+                    } ${
+                      plan.available 
+                        ? 'cursor-pointer hover:border-red-300' 
+                        : 'cursor-not-allowed opacity-70 bg-gray-50'
                     }`}
                     onClick={() => handlePayment(plan)}
                   >
+                    {!plan.available && (
+                      <div className="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
+                        Coming Soon
+                      </div>
+                    )}
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="font-bold text-lg">{plan.name}</h3>
