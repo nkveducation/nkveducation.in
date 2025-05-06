@@ -1,6 +1,7 @@
 "use client";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default function Plans() {
@@ -92,7 +93,7 @@ export default function Plans() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {plans.map((plan, index) => (
-                        <div 
+                        <div
                             key={index}
                             className={`relative rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl ${plan.popular ? "border-2 border-purple-500 transform md:-translate-y-4" : "border border-gray-200"}`}
                         >
@@ -119,11 +120,13 @@ export default function Plans() {
                                         </li>
                                     ))}
                                 </ul>
-                                <button
-                                    className={`w-full py-3 px-6 rounded-lg font-bold text-white ${plan.accentColor} hover:opacity-90 transition cursor-pointer` }
-                                >
-                                    {plan.cta}
-                                </button>
+                                <Link href="/registration/tie-up-registration">
+                                    <button
+                                        className={`w-full py-3 px-6 rounded-lg font-bold text-white ${plan.accentColor} hover:opacity-90 transition cursor-pointer`}
+                                    >
+                                        {plan.cta}
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ))}
