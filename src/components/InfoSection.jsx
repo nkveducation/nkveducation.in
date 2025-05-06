@@ -32,7 +32,7 @@ export default function InfoSection() {
 
         {/* Interactive Pill Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-16">
-          {['Think Smart', 'Do Smart', 'Be Smart'].map((label, i) => (
+          {['Dream It ', 'Bleave It', 'Achive It'].map((label, i) => (
             <motion.div
               key={i}
               whileHover={{ y: -4 }}
