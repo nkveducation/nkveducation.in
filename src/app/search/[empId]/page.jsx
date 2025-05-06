@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect , useRef  } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -24,6 +24,8 @@ export default function EmployeeSearchPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentTeachersPage, setCurrentTeachersPage] = useState(1);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const flipIntervalRef = useRef(null);
   const itemsPerPage = 6;
 
   // Pagination for employees
@@ -40,6 +42,20 @@ export default function EmployeeSearchPage() {
 
   const totalPages = Math.ceil(relatedEmployees.length / itemsPerPage);
   const totalTeachersPages = Math.ceil(relatedTeachers.length / itemsPerPage);
+
+  useEffect(() => {
+    // Start flip interval when component mounts
+    flipIntervalRef.current = setInterval(() => {
+      setIsFlipped(prev => !prev);
+    }, 5000); // Flip every 5 seconds
+
+    // Clean up interval on unmount
+    return () => {
+      if (flipIntervalRef.current) {
+        clearInterval(flipIntervalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -152,47 +168,199 @@ export default function EmployeeSearchPage() {
                 <h2 className="text-xl font-semibold text-gray-900">Personal Information</h2>
               </div>
               
-              <div className="flex flex-col md:flex-row gap-8">
-                {employee.photo && (
-                  <div className="flex-shrink-0">
-                    <div className="relative group">
-                      <img 
-                        src={employee.photo} 
-                        alt={employee.fullName} 
-                        className="w-40 h-40 object-cover rounded-xl border-4 border-white shadow-lg group-hover:opacity-90 transition-opacity"
-                      />
-                      <div className="absolute inset-0 rounded-xl border-2 border-red-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
-                  {[
-                    ["Full Name", employee.fullName],
-                    ["Father's Name", employee.fatherName],
-                    ["Employee ID", employee.empId],
-                    ["Institute Name", employee.instituteName],
-                    ["Institute Address", employee.instituteAddress],
-                    ["Aadhar Number", employee.aadhar],
-                    ["City", employee.city],
-                    ["Rank", employee.rank],
-                    ["Phone", employee.phone],
-                    ["Sponsor Code", employee.sponsorCode],
-                  ].map(([label, value]) => (
-                    <InfoCard key={label} label={label} value={value} />
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-                <div className="inline-flex items-center bg-gradient-to-r from-green-50 to-green-100 px-4 py-2 rounded-lg border border-green-200 shadow-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="font-medium text-green-700">Verified Employee</span>
-                </div>
+              <div className="flex flex-col md:flex-row md:justify-center md:items-start gap-8">
+  {employee.photo && (
+    <div className="flex-shrink-0 mx-auto md:mx-0">
+      <div className="relative w-40 h-40 perspective-1000">
+        {/* Flipping card container */}
+        <motion.div
+          className="relative w-full h-full transform-style-preserve-3d"
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+        >
+          {/* Front side - Employee Photo */}
+          <div className="absolute inset-0 backface-hidden h-[190px]">
+            <div className="relative group w-full h-full">
+              <img 
+                src={employee.photo} 
+                alt={employee.fullName} 
+                className="w-full h-full object-cover rounded-xl border-4 border-white shadow-lg"
+              />
+              <div className="absolute inset-0 rounded-xl border-2 border-red-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 rounded-b-xl">
+                <p className="text-white text-sm font-medium">{employee.fullName}</p>
+                <p className="text-white/80 text-xs">{employee.rank}</p>
               </div>
             </div>
+          </div>
+
+          {/* Back side - ID Card Style */}
+          <div className="absolute inset-0 backface-hidden bg-white rounded-xl shadow-lg border-2 border-red-100 transform rotate-y-180 p-4 flex flex-col justify-between h-[190px]">
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-sm font-bold text-gray-800 truncate">{employee.fullName}</h3>
+              <p className="text-xs text-gray-600">{employee.rank}</p>
+              <div className="mt-2 p-1 bg-gray-100 rounded">
+                <p className="text-xs font-mono text-gray-800">ID: {employee.empId}</p>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="text-xs text-gray-600">Verified</div>
+              <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  )}
+
+<div className="w-full md:w-2/3 space-y-6 relative">
+  {/* Vertical line */}
+  <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-indigo-100 z-0"></div>
+
+  {/* Animated dots */}
+  <div className="absolute left-[29px] top-0 bottom-0 w-1 flex flex-col items-center z-10">
+    {[...Array(3)].map((_, i) => (
+      <motion.div
+        key={i}
+        initial={{ scale: 0.5 }}
+        animate={{ scale: 1 }}
+        transition={{ 
+          duration: 0.5,
+          delay: i * 0.1,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+        className="w-3 h-3 bg-indigo-600 rounded-full my-6"
+      />
+    ))}
+  </div>
+
+  {/* Information sections */}
+  <div className="relative z-20 space-y-8">
+    {/* Personal Information */}
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3 }}
+      className="pl-12"
+    >
+      <div className="flex items-center mb-4">
+        <div className="p-2 bg-indigo-100 rounded-lg mr-4">
+          <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-indigo-800">Personal Information</h3>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          ["Full Name", employee.fullName],
+          ["Father's Name", employee.fatherName],
+          ["Aadhar Number", employee.aadhar],
+          ["City", employee.city]
+        ].map(([label, value]) => (
+          <div 
+            key={label} 
+            className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <span className="block text-xs font-medium text-indigo-600 uppercase tracking-wider">{label}</span>
+            <span className="block mt-1 text-base font-semibold text-gray-800">
+              {value || <span className="text-gray-400">—</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+
+    {/* Professional Information */}
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+      className="pl-12"
+    >
+      <div className="flex items-center mb-4">
+        <div className="p-2 bg-indigo-100 rounded-lg mr-4">
+          <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-indigo-800">Professional Details</h3>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          ["Employee ID", employee.empId],
+          ["Rank", employee.rank],
+          ["Institute Name", employee.instituteName],
+          ["Sponsor Code", employee.sponsorCode]
+        ].map(([label, value]) => (
+          <div 
+            key={label} 
+            className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <span className="block text-xs font-medium text-indigo-600 uppercase tracking-wider">{label}</span>
+            <span className="block mt-1 text-base font-semibold text-gray-800">
+              {value || <span className="text-gray-400">—</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+
+    {/* Contact Information */}
+    <motion.div 
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      className="pl-12"
+    >
+      <div className="flex items-center mb-4">
+        <div className="p-2 bg-indigo-100 rounded-lg mr-4">
+          <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-indigo-800">Contact Information</h3>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          ["Phone", employee.phone],
+          ["Institute Address", employee.instituteAddress],
+          ["Email", employee.email || "—"]
+        ].map(([label, value]) => (
+          <div 
+            key={label} 
+            className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all"
+          >
+            <span className="block text-xs font-medium text-indigo-600 uppercase tracking-wider">{label}</span>
+            <span className="block mt-1 text-base font-semibold text-gray-800">
+              {value || <span className="text-gray-400">—</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  </div>
+</div>
+</div>
+
+
+              <div className="mt-8 flex items-center justify-center px-6 py-3 bg-green-50 rounded-full w-max mx-auto">
+              <svg className="w-6 h-6 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-green-700 font-medium">Verified Employee</span>
+            </div>
+          </div>
           </div>
 
           {/* Related Teachers Section */}
@@ -237,26 +405,6 @@ export default function EmployeeSearchPage() {
                           <span className="ml-auto px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">Verified</span>
                         )}
                       </div>
-                      {/* <div className="space-y-3 mt-4">
-                        <div className="flex items-center text-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          <span>{teacher.phone || "Not provided"}</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                          </svg>
-                          <span>{teacher.instituteName || "Not provided"}</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <span>{teacher.subject || "Not specified"}</span>
-                        </div>
-                      </div> */}
                     </motion.div>
                   ))}
                 </div>
@@ -369,6 +517,19 @@ export default function EmployeeSearchPage() {
           )}
         </motion.div>
       </section>
+
+      {/* Add this CSS for 3D effects */}
+      <style jsx global>{`
+        .perspective-1000 {
+          perspective: 1000px;
+        }
+        .transform-style-preserve-3d {
+          transform-style: preserve-3d;
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+      `}</style>
     </main>
   );
 }
