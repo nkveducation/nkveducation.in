@@ -156,12 +156,7 @@ export default function RegisterPage() {
 
       <div
         className="text-white px-6 py-8 flex justify-between items-center"
-        style={{
-          backgroundImage: 'url("/images/red-dot-button-bg.jpeg")',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
+        style={{ background: 'linear-gradient(to right, #dc2626, #b91c1c)' }}
       >
         <h1 className="text-3xl font-bold">Tie-Up Register</h1>
         <div className="bg-white text-black px-4 py-2 rounded-full shadow-md">

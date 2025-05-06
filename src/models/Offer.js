@@ -1,3 +1,4 @@
+// src/models/Offer.js
 import mongoose from 'mongoose';
 
 const offerSchema = new mongoose.Schema({
@@ -20,8 +21,9 @@ const offerSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+}, { timestamps: true });
 
-const Offer = mongoose.model('Offer', offerSchema);
+// Check if model already exists before compiling
+const Offer = mongoose.models.Offer || mongoose.model('Offer', offerSchema);
 
 export default Offer;
