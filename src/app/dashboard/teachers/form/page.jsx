@@ -20,9 +20,12 @@ export default function AddTeacher() {
     sponsorcode: '',
     photo: '',
     rank: '',
+    income: '',
+    plan: 'Basic Plan', // Add plan field with default value
   });
   const [isUploading, setIsUploading] = useState(false);
 
+  const planOptions = ['Basic Plan', 'Premium Plan', 'Premium+ Plan'];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,6 +68,7 @@ export default function AddTeacher() {
       setIsUploading(false); // Ensure isUploading is reset in all cases
     }
   };
+
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
@@ -153,6 +157,31 @@ export default function AddTeacher() {
             value={formData.rank}
             onChange={handleChange}
           />
+          <Input
+          type="number"
+          name="income"
+          placeholder="Income"
+          value={formData.income}
+          onChange={handleChange}
+          />
+           <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="plan">
+              Select Plan
+            </label>
+            <select
+              id="plan"
+              name="plan"
+              value={formData.plan}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            >
+              {planOptions.map((plan) => (
+                <option key={plan} value={plan}>
+                  {plan}
+                </option>
+              ))}
+            </select>
+          </div>
           <Button type="submit"
             disabled={isUploading}
 

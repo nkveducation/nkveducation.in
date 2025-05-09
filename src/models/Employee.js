@@ -13,6 +13,8 @@ const employeeSchema = new mongoose.Schema({
   phone: String,
   sponsorCode: String,
   photo: String,
+  doj: String,
+  createdAt: { type: Date, default: Date.now },
   isVerified: { type: Boolean, default: false }
 }, { collection: 'employees' });
 

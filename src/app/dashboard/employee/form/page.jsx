@@ -19,6 +19,7 @@ export default function EmployeeForm() {
     rank: '',
     phone: '',
     sponsorCode: '',
+    doj: '',
     photo: null,
   });
   const [imagePreview, setImagePreview] = useState('');
@@ -62,6 +63,7 @@ export default function EmployeeForm() {
           rank: '',
           phone: '',
           sponsorCode: '',
+          doj: '',
           photo: null,
         });
         setImagePreview('');

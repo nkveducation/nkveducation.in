@@ -14,7 +14,22 @@ export async function POST(request) {
     await dbConnect();
 
     const formData = await request.json();
-    const { teacherId, fullName, dob, phoneNo, email, city, state, businessname, businessaddress, sponsorcode, photo, rank } = formData;
+    const { 
+      teacherId, 
+      fullName, 
+      dob, 
+      phoneNo, 
+      email, 
+      city, 
+      state, 
+      businessname, 
+      businessaddress, 
+      sponsorcode, 
+      photo, 
+      rank, 
+      income,
+      plan // Add plan to destructuring
+    } = formData;
 
     // Upload photo to Cloudinary
     const cloudinaryResponse = await cloudinary.v2.uploader.upload(photo, {
@@ -35,6 +50,8 @@ export async function POST(request) {
       sponsorcode,
       photo: cloudinaryResponse.secure_url,
       rank,
+      income,
+      plan // Include plan in the new teacher document
     });
 
     await newTeacher.save();

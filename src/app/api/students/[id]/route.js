@@ -20,6 +20,7 @@ export async function GET(request, { params }) {
   }
 }
 
+
 // UPDATE student
 export async function PUT(request, { params }) {
   try {

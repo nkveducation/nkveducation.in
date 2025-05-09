@@ -33,6 +33,7 @@ export async function POST(request) {
       rank,
       phone,
       sponsorCode,
+      doj,
       photo: cloudinaryResponse.secure_url,
     });
 

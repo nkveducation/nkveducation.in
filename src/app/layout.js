@@ -15,7 +15,8 @@ function LayoutWithHooks({ children }) {
 
   const isDashboard = pathname.startsWith('/dashboard');
   const isPay = pathname.startsWith('/membership/payment-popup');
-  const hideLayout = isDashboard || isPay;
+  const isCertificate = pathname.startsWith('/certificates/');
+  const hideLayout = isDashboard || isPay || isCertificate;
 
   useEffect(() => {
     setIsLoading(false);
