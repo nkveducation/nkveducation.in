@@ -10,7 +10,8 @@ import {
   FiX,
   FiMenu,
   FiArrowLeft,
-  FiCheckCircle
+  FiCheckCircle,
+  FiAlertCircle
 } from 'react-icons/fi';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { useParams } from 'next/navigation';
@@ -67,6 +68,7 @@ export default function CertificateSearchPage() {
         if (!res.ok) throw new Error(data.message || 'Failed to fetch data');
         setResults(data.data || []);
         setTeacher(data.data[0]?.teacher || {});
+        console.log(data.data[0]?.teacher || {});
       } catch (err) {
         setError(err.message);
       } finally {
@@ -240,6 +242,7 @@ export default function CertificateSearchPage() {
                       className="rounded-lg bg-white p-6 shadow-sm border border-gray-100"
                     >
                       <div className="flex flex-col md:flex-row md:space-x-6">
+                        {/* Profile Image Section */}
                         <div className="mb-4 md:mb-0 flex justify-center md:block">
                           {teacher.photo ? (
                             <img
@@ -255,32 +258,113 @@ export default function CertificateSearchPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 flex-1">
-                          {[
-                            ['Full Name', teacher.fullName],
-                            ['Teacher ID', teacher.teacherId],
-                            ['Email', teacher.email],
-                            ['Phone No', teacher.phoneNo],
-                            ['DOB', teacher.dob],
-                            ['City', teacher.city],
-                            ['State', teacher.state],
-                            ['Rank', teacher.rank],
-                            ['Sponsor Code', teacher.sponsorcode],
-                            ['Business Name', teacher.businessname],
-                            ['Business Address', teacher.businessaddress],
-                          ].map(([label, value]) => (
-                            <div key={label} className="border-b border-gray-100 pb-2">
-                              <p className="text-sm font-medium text-gray-500">{label}</p>
-                              <p className="text-gray-800 break-words">{value || '—'}</p>
+                        {/* Profile Information Section */}
+                        <div className="flex-1">
+                          {/* Header Section */}
+                          <div className="mb-6">
+                            <h1 className="text-2xl font-bold">{teacher.fullName}</h1>
+                            <div className="flex items-center space-x-4 mt-2">
+                              <span className="font-medium text-gray-700">Role: Teacher</span>
+                              <span className="font-medium text-gray-700">Position: {teacher.rank || '—'}</span>
                             </div>
-                          ))}
-                        </div>
-                      </div>
+                          </div>
 
-                      <div className="mt-4 flex items-center">
-                        <div className="flex items-center rounded-full bg-green-100 px-3 py-1">
-                          <FiCheckCircle className="mr-2 text-green-600" />
-                          <span className="text-sm font-medium text-green-600">Verified</span>
+                          {/* Contact Information */}
+                          <div className="mb-6">
+                            <div className="flex flex-wrap gap-4">
+                              <div>
+                                <span className="font-medium">E-mail:</span> {teacher.email || '—'}
+                              </div>
+                              <div>
+                                <span className="font-medium">Phone:</span> {teacher.phoneNo || '—'}
+                              </div>
+                              <div>
+                                <span className="font-medium">Sponsor Code:</span> {teacher.sponsorcode || '—'}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="border-t border-b border-gray-200 py-4 my-4">
+                            {/* Basic Information */}
+                            <h2 className="text-lg font-semibold mb-3">Basic Information</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                              <div>
+                                <p className="text-sm text-gray-500">Teacher ID</p>
+                                <p>{teacher.teacherId || '—'}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-500">Date of Birth</p>
+                                <p>{teacher.dob ? new Date(teacher.dob).toLocaleDateString() : '—'}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-500">Plan</p>
+                                <p>{teacher.plan || 'Basic Plan'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Personal Information */}
+                          <div className="mb-6">
+                            <h2 className="text-lg font-semibold mb-3">Personal Information</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-sm text-gray-500">Address</p>
+                                <p>
+                                  {teacher.businessaddress || '—'}<br />
+                                  {teacher.city || ''} {teacher.state || ''}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-500">Business Name</p>
+                                <p>{teacher.businessname || '—'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Verification Status */}
+                          <div>
+                            <h2 className="text-lg font-semibold mb-3">Account Status</h2>
+                            <div className="flex items-center">
+                              {teacher.isVerified ? (
+                                <div className="flex items-center rounded-full bg-green-100 px-3 py-1">
+                                  <FiCheckCircle className="mr-2 text-green-600" />
+                                  <span className="text-sm font-medium text-green-600">Verified</span>
+                                </div>
+                              ) : (
+                                <div
+                                  className={`flex items-center rounded-full px-3 py-1 
+                                ${teacher.income < 0
+                                      ? "bg-yellow-100"
+                                      : teacher.income === 0
+                                        ? "bg-yellow-100"
+                                        : "bg-green-100"}`}
+                                >
+                                  {teacher.income < 1 && (
+                                    <FiAlertCircle className="mr-2 text-yellow-600" />
+                                  )}
+                                  {teacher.income >= 1 && (
+                                    <FiCheckCircle className="mr-2 text-green-600" />
+                                  )}
+                                  <span
+                                    className={`text-sm font-medium 
+                                  ${teacher.income < 0
+                                        ? "text-yellow-600"
+                                        : teacher.income === 0
+                                          ? "text-yellow-600"
+                                          : "text-green-600"}`}
+                                  >
+                                    {teacher.income < 0
+                                      ? "Pending Verification"
+                                      : teacher.income === 0
+                                        ? "Pending"
+                                        : "Verified"}
+                                  </span>
+                                </div>
+
+                              )}
+                              <span className="ml-4 text-sm text-gray-500">Income: ₹{teacher.income || 0}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
