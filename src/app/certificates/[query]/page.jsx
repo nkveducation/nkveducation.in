@@ -137,7 +137,7 @@ export default function CertificateSearchPage() {
                   className="h-10 w-10 rounded-full object-cover"
                   onError={(e) => (e.target.src = "/placeholder-logo.png")}
                 />
-                <h1 className="text-xl font-bold text-white">EduCert</h1>
+                <h1 className="text-xl font-bold text-white">NKV Education</h1>
               </div>
               {isMobile && (
                 <button
