@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function About() {
   return (
-    <main className="m-0 p-0 min-w-full mt-[80px]">
+    <main className="m-0 p-0 min-w-full mt-[80px] py-11">
       <div
         className="text-white px-6 py-8 flex flex-col md:flex-row justify-between items-center"
         style={{
