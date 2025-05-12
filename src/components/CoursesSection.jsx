@@ -1,5 +1,6 @@
 'use client';
-import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+
+import { motion, useAnimation } from 'framer-motion';
 import { BriefcaseBusiness, LaptopMinimal, UserRoundCheck, ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -60,9 +61,11 @@ const courseCategories = [
 
 export default function ModernCoursesSection() {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
   const controls = useAnimation();
 
   useEffect(() => {
+    setIsMounted(true);
     controls.start({
       opacity: 1,
       y: 0,
@@ -70,37 +73,49 @@ export default function ModernCoursesSection() {
     });
   }, [controls]);
 
+  const renderDecorativeElements = () => {
+    if (!isMounted) return null;
+    
+    return [...Array(10)].map((_, i) => {
+      const size = Math.random() * 300 + 100;
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      
+      return (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-gradient-to-r from-red-500/10 to-purple-500/10 backdrop-blur-sm"
+          initial={{
+            x: Math.random() * 100,
+            y: Math.random() * 100,
+            opacity: 0.3
+          }}
+          animate={{
+            x: [0, Math.random() * 50 - 25],
+            y: [0, Math.random() * 50 - 25],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            left: `${left}%`,
+            top: `${top}%`,
+          }}
+        />
+      );
+    });
+  };
+
   return (
     <section className="relative py-20 px-4 md:px-8 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
-      {/* Decorative elements */}
+      {/* Decorative elements - now client-side only */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-r from-red-500/10 to-purple-500/10 backdrop-blur-sm"
-            initial={{
-              x: Math.random() * 100,
-              y: Math.random() * 100,
-              opacity: 0.3
-            }}
-            animate={{
-              x: [0, Math.random() * 50 - 25],
-              y: [0, Math.random() * 50 - 25],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-            style={{
-              width: `${Math.random() * 300 + 100}px`,
-              height: `${Math.random() * 300 + 100}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
+        {renderDecorativeElements()}
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -142,14 +157,16 @@ export default function ModernCoursesSection() {
               <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
               
               {/* Hover shine effect */}
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
-                  style={{
-                    transform: 'translateX(-100%)',
-                    animation: hoveredCard === category.id ? 'shine 1.5s forwards' : 'none'
-                  }}
-                />
-              </div>
+              {isMounted && (
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                    style={{
+                      transform: 'translateX(-100%)',
+                      animation: hoveredCard === category.id ? 'shine 1.5s forwards' : 'none'
+                    }}
+                  />
+                </div>
+              )}
 
               <div className="p-8 relative">
                 <div className="flex items-start gap-6 mb-6">
@@ -215,7 +232,9 @@ export default function ModernCoursesSection() {
             <span className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             
             {/* Button shine effect */}
-            <span className="absolute top-0 left-0 w-1/3 h-full bg-white/30 -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-700"></span>
+            {isMounted && (
+              <span className="absolute top-0 left-0 w-1/3 h-full bg-white/30 -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-700"></span>
+            )}
           </motion.button>
           
           <motion.p 

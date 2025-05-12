@@ -24,42 +24,8 @@ export default function HeroSection() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Don't render particles on server
-  const renderParticles = () => {
-    if (!isClient) return null;
-    
-    return [...Array(20)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute rounded-full bg-white/10 backdrop-blur-sm"
-        initial={{
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          scale: Math.random() * 0.5 + 0.5,
-        }}
-        animate={{
-          y: [0, Math.random() * 100 - 50],
-          x: [0, Math.random() * 100 - 50],
-        }}
-        transition={{
-          duration: Math.random() * 10 + 10,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut",
-        }}
-        style={{
-          width: `${Math.random() * 10 + 5}px`,
-          height: `${Math.random() * 10 + 5}px`,
-        }}
-      />
-    ));
-  };
-
   return (
     <section className="relative h-screen w-full overflow-hidden">
-      {/* Animated gradient background layer */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-900 opacity-70 z-0"></div>
-
       {/* Background Video with parallax effect */}
       <motion.video
         className="absolute inset-0 w-full h-full object-cover z-0"
@@ -73,9 +39,6 @@ export default function HeroSection() {
       >
         <source src="/video.mp4" type="video/mp4" />
       </motion.video>
-
-      {/* Floating particles - client-side only */}
-      {renderParticles()}
 
       {/* Cursor follower - client-side only */}
       {isClient && (
