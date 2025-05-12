@@ -2,11 +2,11 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import Navbar from '@/components/Navbar';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import FooterSection from '@/components/FooterSection';
 import GlobalLoading from '@/components/GlobalLoading';
+import HeaderWithNav from '@/components/Navbar';
 
 function LayoutWithHooks({ children }) {
   const pathname = usePathname();
@@ -33,7 +33,7 @@ function LayoutWithHooks({ children }) {
   return (
     <>
       {isLoading && <GlobalLoading />}
-      {!hideLayout && <Navbar />}
+      {!hideLayout && <HeaderWithNav />}
       {children}
       {!hideLayout && <FooterSection />}
     </>
@@ -52,7 +52,9 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <Suspense fallback={<div>Loading layout...</div>}>
-            <LayoutWithHooks>{children}</LayoutWithHooks>
+            <LayoutWithHooks>
+              {children}
+            </LayoutWithHooks>
           </Suspense>
         </ThemeProvider>
       </body>
