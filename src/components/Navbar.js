@@ -109,7 +109,7 @@ export default function HeaderWithNav() {
       >
         <div className="flex items-center space-x-2">
           <span className="font-semibold text-sm text-black">
-            639712XXXX
+            +9195572 73142
           </span>
         </div>
 
