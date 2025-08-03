@@ -14,7 +14,7 @@ export async function POST(request) {
     await dbConnect();
 
     const formData = await request.json();
-    const { fullName, fatherName, empId, instituteName, instituteAddress, aadhar, city, rank, phone, sponsorCode, photo } = formData;
+    const { fullName, fatherName, empId, instituteName, instituteAddress, aadhar, city, rank, phone, sponsorCode, photo , doj } = formData;
 
     // Upload photo to Cloudinary
     const cloudinaryResponse = await cloudinary.v2.uploader.upload(photo, {
