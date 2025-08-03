@@ -1,7 +1,7 @@
 // app/api/login/route.js
 import { NextResponse } from 'next/server';
 
-const PRESET_USER = { username: 'admin', password: 'password123' }; // **Pre-set Credentials**
+const PRESET_USER = { username: 'nkveducation@admin', password: 'nkveducation@dev' }; // **Pre-set Credentials**
 
 export async function POST(req) {
     const { username, password } = await req.json();
