@@ -179,7 +179,7 @@ export default function CertificateSearchPage() {
             {/* Navigation */}
             <nav className="flex-1 space-y-1">
               {[
-                { name: 'Home', href: '/home', icon: <FiHome size={18} /> },
+                { name: 'Home', href: `/certificates/${encodeURIComponent(query)}`, icon: <FiHome size={18} /> },
                 { name: 'Our Students', href: `/certificates/${encodeURIComponent(query)}/our-students`, icon: <FiUsers size={18} /> },
                 { name: 'Our Income', href: `/certificates/${encodeURIComponent(query)}/our-income`, icon: <FiDollarSign size={18} /> },
                 { name: 'Active Registration Plan', href: `/certificates/${encodeURIComponent(query)}/active-registration-plan`, icon: <FiFileText size={18} /> },
